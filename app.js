@@ -36,7 +36,7 @@ function addItem(e) {
     const attr = document.createAttribute("data-id");
     attr.value = id;
     element.setAttributeNode(attr);
-    element.innerHTML = `<p class=${value}>item</p>
+    element.innerHTML = `<p class="title">${value}</p>
     <div class="btn-container">
       <button type="button" class="edit-btn">
         <i class="fas fa-edit"></i>
@@ -46,6 +46,10 @@ function addItem(e) {
       </button>
     </div>`;
 
+    const deleteBtn = element.querySelector(".delete-btn");
+    const editBtn = element.querySelector(".edit-btn");
+    deleteBtn.addEventListener("click", deleteItem);
+    editBtn.addEventListener("click", editItem);
     //append child
     list.appendChild(element);
     //display alert
@@ -57,7 +61,11 @@ function addItem(e) {
     //set back to default
     setBackToDefault();
   } else if (value && editFlag) {
-    console.log("editing");
+    editElement.innerHTML = value;
+    displayAlert("value changed", "success");
+    editLocalStorage(editID, value);
+
+    setBackToDefault();
   } else {
     displayAlert("please enter value", "danger");
   }
@@ -89,6 +97,34 @@ function clearItems(e) {
   // localStorage.removeItem('list);
 }
 
+//delete function
+
+function deleteItem(e) {
+  const element = e.currentTarget.parentElement.parentElement;
+  const id = element.dataset.id;
+  list.removeChild(element);
+  if (list.children.length === 0) {
+    container.classList.remove("show-container");
+  }
+  displayAlert("item removed", "danger");
+  setBackToDefault();
+  //remove from local storage
+  //removeFromLocalStorage(id);
+}
+
+//edit function
+
+function editItem(e) {
+  const element = e.currentTarget.parentElement.parentElement;
+  //set edit item
+  editElement = e.currentTarget.parentElement.previousElementSibling;
+  //set from value
+  grocery.value = editElement.innerHTML;
+  editFlag = true;
+  editID = element.dataset.id;
+  submitBtn.textContent = "edit";
+}
+
 //set back to default
 function setBackToDefault() {
   grocery.value = "";
@@ -100,5 +136,6 @@ function setBackToDefault() {
 function addToLocalStorage(id, value) {
   console.log("added to local storage");
 }
-
+function removeFromLocalStorage(id) {}
+function editLocalStorage(id, value) {}
 //---------------SETUP ITEMS----------------------
